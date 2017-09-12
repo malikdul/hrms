@@ -1,0 +1,26 @@
+extends layout
+
+block content
+  html
+  head
+    title Emotion Detection APP
+    link(rel='stylesheet', href='stylesheets/bootstrap.min.css')
+    script(src='javascripts/bootstrap.min.js')
+    script(src='javascripts/jquery.js')
+  body
+    nav.navbar.navbar-default
+      .container-fluid
+        .navbar-header
+          a.navbar-brand(href='/') Emotion Detection Application
+        ul.nav.navbar-nav
+          li.active
+            a(href='/') Home
+          li
+            a(href='/signin') Login
+          li
+            a(href='/signup') Signup
+    center
+      img(src='images/image1.jpg', height='65%', width='75%')
+    .container
+      h3 Emotion Detection
+      p A navigation bar is a navigation header that is placed at the top of the page.
