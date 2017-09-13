@@ -4,7 +4,6 @@
 /dist
 /tmp
 /out-tsc
-/client/app/theme
 
 # dependencies
 /node_modules
