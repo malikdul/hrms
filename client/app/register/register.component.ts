@@ -22,6 +22,8 @@ export class RegisterComponent implements OnInit {
                                Validators.maxLength(100)]);
   password = new FormControl('', [Validators.required,
                                   Validators.minLength(6)]);
+  re_password = new FormControl('', [Validators.required,
+                                    Validators.minLength(6)]);
 
   role = new FormControl('', [Validators.required]);
 
@@ -35,6 +37,7 @@ export class RegisterComponent implements OnInit {
       username: this.username,
       email: this.email,
       password: this.password,
+      re_password: this.re_password,
       role: this.role
     });
   }
@@ -48,8 +51,13 @@ export class RegisterComponent implements OnInit {
     setClassPassword() {
     return { 'has-danger': !this.password.pristine && !this.password.valid };
   }
+  setClassre_password() {
+    return { 'has-danger': !this.re_password.pristine && !this.re_password.valid };
+  }
 
   register() {
+    console.log(this.re_password.value);
+    if(this.password.value==this.re_password.value){
     this.userService.register(this.registerForm.value).subscribe(
       
       res => {
@@ -58,5 +66,10 @@ export class RegisterComponent implements OnInit {
       },
       error => this.toast.setMessage('email already exists', 'danger')
     );
+  } 
+  else{
+    console.log("else");
+    this.toast.setMessage('Password doesnot match.', 'danger')
+  }
   }
 }

@@ -3,7 +3,7 @@
 <app-toast [message]="toast.message"></app-toast>
 
 <div class="card" *ngIf="!isLoading">
-  <h4 class="card-header">Account settings</h4>
+  <h4 class="card-header">Profile settings</h4>
   <div class="card-block">
     <form #accountForm="ngForm" (ngSubmit)="save(user)">
       <div class="input-group">
@@ -16,11 +16,23 @@
       </div>
       <div class="input-group">
         <span class="input-group-addon"><i class="fa fa-black-tie"></i></span>
-        <select class="form-control" name="role" [(ngModel)]="user.role">
-          <option value="" disabled>Role</option>
-          <option value="user">User</option>
-          <option value="admin">Admin</option>
-        </select>
+        <input class="form-control" type="text" name="role" [(ngModel)]="user.role" placeholder="Role" required>
+      </div>
+      <div class="input-group">
+        <span class="input-group-addon"><i class="fa fa-phone-square"></i></span>
+        <input class="form-control" type="text" name="phoneno" [(ngModel)]="user.phoneno" placeholder="Phone Number" required>
+      </div>
+      <div class="input-group">
+        <span class="input-group-addon"><i class="fa fa-address-book"></i></span>
+        <input class="form-control" type="text" name="address" [(ngModel)]="user.address" placeholder="Address" required>
+      </div>
+      <div class="input-group">
+        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+        <input class="form-control" type="text" name="dob" [(ngModel)]="user.dob" placeholder="DOB" required>
+      </div>
+      <div class="input-group">
+        <span class="input-group-addon"><i class="fa fa-wrench"></i></span>
+        <input class="form-control" type="text" name="skill" [(ngModel)]="user.skill" placeholder="Skills" required>
       </div>
       <button class="btn btn-primary" type="submit" [disabled]="!accountForm.form.valid">
         <i class="fa fa-save"></i> Save

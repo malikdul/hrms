@@ -70,7 +70,7 @@ export default class UserCtrl extends BaseCtrl {
         to: email,
         from:'fmalvi12@gmail.com' ,
         subject: 'Verification Email',
-        html: 'Welcome "+name+"!<br><br>Thanks for registering your account on our site.<br><br>We hope you enjoy your experience.<br><br>Please follow the link below to verify your account:<br><br>http://localhost:4200/api/user/verify/'+id
+        html: 'Welcome '+name+'!<br><br>Thanks for registering your account on our site.<br><br>We hope you enjoy your experience.<br><br>Please follow the link below to verify your account:<br><br>http://localhost:4200/api/user/verify/'+id
       };
       
       transporter.sendMail(mailOption,function(error,info){
