@@ -22,10 +22,10 @@ export default class UserCtrl extends BaseCtrl {
    forgotpassword = (req, res) => {
     //console.log("recieved email"+ req.body.email);
     this.model.findOne({ email: req.body.email }, (err, obj) => {
-    console.log("forgot passwd"+ req.body.email);
-    console.log("object passwd"+ obj.email);
+  // console.log("forgot passwd"+ req.body.email);
+    //console.log("object passwd"+ obj.email);
       if(obj.email == req.body.email){
-        console.log("Email found!");
+        //console.log("Email found!");
         res.status(200).json();
       }
       else if (err) { return console.error(err); }
