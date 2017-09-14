@@ -30,6 +30,7 @@ abstract class BaseCtrl {
         return console.error(err);
       }
       res.status(200).json(item);
+      
     });
   }
 

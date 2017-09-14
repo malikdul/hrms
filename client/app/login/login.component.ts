@@ -43,8 +43,19 @@ export class LoginComponent implements OnInit {
 
   login() {
     this.auth.login(this.loginForm.value).subscribe(
-      res => this.router.navigate(['/']),
-      error => this.toast.setMessage('invalid email or password!', 'danger')
+      res => {
+        //console.log(this.auth.currentUser);
+        this.router.navigate(['/'])
+    },
+      error =>{ 
+       // console.log("Error is generated as :",error);
+        if(error.json().message){
+          this.toast.setMessage(error.json().message, 'danger')
+        }
+        else{
+          this.toast.setMessage('invalid email or password!', 'danger')
+        }
+      }
     );
   }
 
