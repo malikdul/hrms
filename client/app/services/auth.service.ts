@@ -23,14 +23,23 @@ export class AuthService {
   }
 
   login(emailAndPassword) {
-    return this.userService.login(emailAndPassword).map(res => res.json()).map(
+    const obs = this.userService.login(emailAndPassword);
+    
+    obs.subscribe(
+      
       res => {
-        localStorage.setItem('token', res.token);
-        const decodedUser = this.decodeUserFromToken(res.token);
+        let result=res.json();
+
+        //console.log("rsponse:  ",result.token);
+        localStorage.setItem('token', result.token);
+        const decodedUser = this.decodeUserFromToken(result.token);
         this.setCurrentUser(decodedUser);
+      ///console.log(decodedUser);
         return this.loggedIn;
       }
     );
+
+    return obs
   }
 
   logout() {
@@ -42,6 +51,7 @@ export class AuthService {
   }
 
   decodeUserFromToken(token) {
+    console.log(token);
     return this.jwtHelper.decodeToken(token).user;
   }
 

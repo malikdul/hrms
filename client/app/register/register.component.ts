@@ -4,6 +4,7 @@ import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms'
 import { UserService } from '../services/user.service';
 import { ToastComponent } from '../shared/toast/toast.component';
 
+
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
@@ -47,7 +48,7 @@ export class RegisterComponent implements OnInit {
   setClassEmail() {
     return { 'has-danger': !this.email.pristine && !this.email.valid };
   }
-  setClassPassword() {
+    setClassPassword() {
     return { 'has-danger': !this.password.pristine && !this.password.valid };
   }
   setClassre_password() {
@@ -58,6 +59,7 @@ export class RegisterComponent implements OnInit {
     console.log(this.re_password.value);
     if(this.password.value==this.re_password.value){
     this.userService.register(this.registerForm.value).subscribe(
+      
       res => {
         this.toast.setMessage('you successfully registered!', 'success');
         this.router.navigate(['/login']);
