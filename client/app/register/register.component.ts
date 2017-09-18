@@ -56,19 +56,20 @@ export class RegisterComponent implements OnInit {
   }
 
   register() {
-    console.log(this.re_password.value);
+    //console.log(this.re_password.value);
     if(this.password.value==this.re_password.value){
     this.userService.register(this.registerForm.value).subscribe(
       
       res => {
         this.toast.setMessage('you successfully registered!', 'success');
         this.router.navigate(['/login']);
+        
       },
       error => this.toast.setMessage('email already exists', 'danger')
     );
   } 
   else{
-    console.log("else");
+    //console.log("else");
     this.toast.setMessage('Password doesnot match.', 'danger')
   }
   }

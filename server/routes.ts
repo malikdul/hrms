@@ -24,8 +24,8 @@ export default function setRoutes(app) {
   router.route('/login').post(userCtrl.login);
   router.route('/users').get(userCtrl.getAll);
   router.route('/users/count').get(userCtrl.count);
-  router.route('/user/sendmail').get(userCtrl.sendmail);
-  router.route('/user/verify/:id').get(userCtrl.verify);
+  router.route('/user/sendregmail').get(userCtrl.sendregmail);
+  router.route('/user/verifiedmail/:id').get(userCtrl.verify);
   router.route('/user').post(userCtrl.insert);
   router.route('/user/:id').get(userCtrl.get);
   router.route('/user/:id').put(userCtrl.update);

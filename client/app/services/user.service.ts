@@ -28,7 +28,7 @@ export class UserService {
     return this.http.get('/api/users/count').map(res => res.json());
   }
 
-  addUser(user): Observable<any> {
+  addUser(user): Observable<any> { 
     return this.http.post('/api/user', JSON.stringify(user), this.options);
   }
 
@@ -39,7 +39,9 @@ export class UserService {
   editUser(user): Observable<any> {
     return this.http.put(`/api/user/${user._id}`, JSON.stringify(user), this.options);
   }
-
+  verifiedmail(user): Observable<any> {
+    return this.http.get(`/api/user/verifiedmail/${user._id}`).map(res => res.json());
+  }
   deleteUser(user): Observable<any> {
     return this.http.delete(`/api/user/${user._id}`, this.options);
   }
