@@ -15,6 +15,14 @@ export class UserService {
   register(user): Observable<any> {
     return this.http.post('/api/user', JSON.stringify(user), this.options);
   }
+  forgotpassword(user): Observable<any> {
+    console.log("forgot password request recieved.");
+    return this.http.post('/api/user/forgotpassword', JSON.stringify(user), this.options);
+  }
+  resetpassword(user): Observable<any> {
+    console.log("reset password request recieved.");
+    return this.http.put('/api/user/resetpassword', JSON.stringify(user), this.options);
+  }
 
   login(credentials): Observable<any> {
     return this.http.post('/api/login', JSON.stringify(credentials), this.options);

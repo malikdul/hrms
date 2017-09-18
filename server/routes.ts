@@ -22,11 +22,17 @@ export default function setRoutes(app) {
 
   // Users
   router.route('/login').post(userCtrl.login);
+  //router.route('/forgotpassowrd').post(userCtrl.forgotpassword);
   router.route('/users').get(userCtrl.getAll);
   router.route('/users/count').get(userCtrl.count);
   router.route('/user/sendregmail').get(userCtrl.sendregmail);
   router.route('/user/verifiedmail/:id').get(userCtrl.verify);
+  router.route('/user/sendmail').get(userCtrl.sendmail);
+
+  router.route('/user/resetpasssendmail').get(userCtrl.resetpasssendmail);
+  router.route('/user/resetpassword').put(userCtrl.resetpasswordverify);
   router.route('/user').post(userCtrl.insert);
+  router.route('/user/forgotpassword').post(userCtrl.forgotpassword);
   router.route('/user/:id').get(userCtrl.get);
   router.route('/user/:id').put(userCtrl.update);
   router.route('/user/:id').delete(userCtrl.delete);
