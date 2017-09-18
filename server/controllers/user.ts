@@ -19,7 +19,7 @@ export default class UserCtrl extends BaseCtrl {
       else if (user) {
       if(user.verify==true){
       user.comparePassword(req.body.password, (error, isMatch) => {
-        console.log("pass",req.body.password);
+       // console.log("pass",req.body.password);
         if (!isMatch) { return res.status(403).json({message:'Password Doesnot Match!'}); }
         const token = jwt.sign({ user: user }, process.env.SECRET_TOKEN); // , { expiresIn: 10 } seconds
         //console.log("Sending token to user",token);
