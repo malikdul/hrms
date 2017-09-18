@@ -76,9 +76,8 @@ export default class UserCtrl extends BaseCtrl {
 
         // update it with hash
         req.body.password = bcrypt.hashSync(password);     
-        console.log(req.body.password);
+        console.log('password',req.body.password);
         this.model.findOneAndUpdate({ _id: req.body.id}, req.body, (err  ) => {
-          
           //console.log(req.body.password);
           if (err) { return console.error(err); }
           res.sendStatus(200);
@@ -105,63 +104,11 @@ resetpassword = (req, res) => {
   });
 }
     )};
-//send mail for registration
-  sendmail= (email: string,id: string,name: string) =>{
-    //router.post('/send ', function(req, res, next) { 
-      console.log('Enter in send mail function');
-    var transporter= nodemailer.createTransport({
-        service: 'Gmail',
-        auth: {
-          user: 'kaabtahir786@gmail.com',
-          pass: 'kaab1996'
-        }
-      });
-
-      let mailOption: nodemailer.SendMailOptions= {
-        to: email,
-        from:'kaabtahir786@gmail.com' ,
-        subject: 'Verification Email',
-        html: 'Welcome '+name+'!<br><br>Thanks for registering your account on our site.<br><br>We hope you enjoy your experience.<br><br>Please follow the link below to verify your account:<br><br>http://localhost:4200/api/user/verify/'+id
-      };
-      
-      transporter.sendMail(mailOption,function(error,info){
-        console.log(error);
-        if(error){
-          console.log(error);
-        }else{
-          console.log('Message Sent'+info.response);
-        }
-      });
-    //});
-  }
   //send mail for resetpassword
-  resetpasssendmail= (email: string,id: string,name: string) =>{
-    console.log("Enter into reset password function");
-    //router.post('/send ', function(req, res, next) { 
-    var transporter= nodemailer.createTransport({
-        service: 'Gmail',
-        auth: {
-          user: 'kvhrmsteam@gmail.com',
-          pass: 'team1234'
-        }
-      });
-
-      let mailOption: nodemailer.SendMailOptions= {
-        to: email,
-        from:'kvhrmteam@gmail.com' ,
-        subject: 'Reset Password Email',
-        html: 'Welcome '+name+'!<br><br>You requested for password reset.<br><br>Please follow the link below to Reset your account Password:<br><br>http://localhost:4200/resetpassword/'+id
-      };
-      
-      transporter.sendMail(mailOption,function(error,info){
-        console.log(error);
-        if(error){
-          console.log(error);
-        }else{
-          console.log('Message Sent'+info.response);
-        }
-      });
-    //});
+  resetpasssendmail= (user) =>{
+    let subject= 'Reset Password';
+    // console.log("*********************"+emailuser);
+     this.sendemail.sendresetmail(subject,user)
   }
 
 //function override of insert 
@@ -190,14 +137,14 @@ resetpassword = (req, res) => {
     user.verify=false;
     console.log("recieved email"+ req.body.email);
     this.model.findOne({ email: req.body.email }, (err, obj) => {
-    console.log("forgot passwd"+ req.body.email);
+    console.log("forgot passwd:"+req.body.email);
     console.log("object passwd"+ obj.email);
       if(obj.email == req.body.email){
         //console.log("Email found!");
         res.status(200).json();
       }
       else if (err) { return console.error(err); }
-      this.resetpasssendmail(req.body.email,obj.id,obj.username);
+      this.resetpasssendmail(obj);
       //res.json(obj);
     });
   }

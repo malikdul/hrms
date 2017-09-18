@@ -9,7 +9,7 @@ var EmailSender = (function () {
         this.sendmailregisteration = function (subject, obj) {
             //console.log("**** *****send mail registration*******"+obj.id);
             //console.log(obj.username);
-            var verifylink = "http://localhost:4200/api/user/verify/" + obj.id;
+            var verifylink = "http://localhost:4200/api/user/verifiedmail/" + obj.id;
             var mailOption = {
                 to: obj.email,
                 from: process.env.EMAIL_USER,
@@ -19,7 +19,7 @@ var EmailSender = (function () {
             _this.transporter.sendMail(mailOption, function (error, info) {
                 console.log('Error in send mail: ', error);
                 if (error) {
-                    console.log('Sending mail error!');
+                    // console.log('Sending mail error!');  
                     console.log(error);
                 }
                 else {
