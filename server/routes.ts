@@ -28,7 +28,6 @@ export default function setRoutes(app) {
   router.route('/user/sendmail').get(userCtrl.sendmail);
 
   router.route('/user/resetpasssendmail').get(userCtrl.resetpasssendmail);
-  router.route('/user/verify/:id').get(userCtrl.verify);
   router.route('/user/resetpassword').put(userCtrl.resetpasswordverify);
   router.route('/user/verify/:id').get(userCtrl.verify);
   router.route('/user').post(userCtrl.insert);
