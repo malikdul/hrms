@@ -25,7 +25,7 @@ import { Router } from '@angular/router';
     
         console.log('Responce received!');
         this.toast.setMessage('Account has been verified!!', 'success')
-       // this.router.navigate(['/login'])
+        this.router.navigate(['/login'])
     },
     error => {
       console.log('Error Client end!!');

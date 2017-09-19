@@ -170,36 +170,8 @@ export default class UserCtrl extends BaseCtrl {
           res.status(200).json(item);
         });
       }
-      /* if(user.deleted==true)
-       {
-       
-     }
-     });   
-   }
-       else{
- 
-         return console.error(err);
-       } */
+
     });
-
-    /*console.log('outside deleted user');
-    const user = new User(req.body);
-    user.status=false; 
-    user.verify=false;
-    user.deleted=false;
-       user.save((err, item) => {
-      // 11000 is the code for duplicate key error
-      if (err && err.code === 11000) {
-        res.sendStatus(400);
-      }
-      if (err) {
-       // console.log('Insertion Error: ', req);        
-        return console.error(err);
-      }
-      this.sendregmail(user);
-      res.status(200).json(item);
-    });*/
-
   }
 
 

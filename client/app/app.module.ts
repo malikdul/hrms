@@ -12,6 +12,7 @@ import { CatsComponent } from './cats/cats.component';
 import { AboutComponent } from './about/about.component';
 import { RegisterComponent } from './register/register.component';
 import { LoginComponent } from './login/login.component';
+import { LoginadminComponent } from './loginadmin/loginadmin.component';
 import { forgotpasswordComponent } from './forgotpassword/forgotpassword.component';
 import { ResetpasswordComponent } from './resetpassword/resetpassword.component';
 import { LogoutComponent } from './logout/logout.component';
@@ -28,6 +29,7 @@ import { NotFoundComponent } from './not-found/not-found.component';
     AboutComponent,
     RegisterComponent,
     LoginComponent,
+    LoginadminComponent,
     forgotpasswordComponent,
     ResetpasswordComponent,
     LogoutComponent,

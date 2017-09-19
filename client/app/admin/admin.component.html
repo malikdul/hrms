@@ -3,8 +3,10 @@
 <app-toast [message]="toast.message"></app-toast>
 
 <div class="card" *ngIf="!isLoading">
-  <h4 class="card-header">Registered users ({{users.length}})</h4>
-  <div class="card-block">
+  <h4 class="card-header">Registered users ({{users.length}})</h4><br>
+  <div><button routerLink="/register" class="btn btn-primary btn-md pull-right"><i class="fa fa-floppy-o"></i> Add</button><br>
+  </div>
+    <div class="card-block">
     <table class="table table-bordered table-striped">
       <thead class="thead-default">
         <tr>
@@ -12,6 +14,11 @@
           <th>Email</th>
           <th>Status</th>
           <th>Role</th>
+          <th>Address</th>
+          <th>Phone#</th>
+          <th>DOB</th>
+          <th>Skill</th>
+          <th>Status</th>
           <th>Actions</th>
         </tr>
       </thead>
@@ -20,21 +27,61 @@
           <td colspan="4">There are no registered users.</td>
         </tr>  
       </tbody>
-      <tbody >
-        <tr *ngFor="let user of users" >
+      <tbody *ngIf="!isEditing">
+        <tr *ngFor="let user of users">
           <td>{{user.username}}</td>
           <td>{{user.email}} </td>
           <td *ngIf="user.status === true">Active</td>
           <td *ngIf="user.status !== true">Deactive</td>
           <td>{{user.role}}</td>
+          <td>{{user.address}}</td>
+          <td>{{user.phoneno}}</td>
+          <td>{{user.dob}}</td>
+          <td>{{user.skill}}</td>
+          <td>{{user.status}}</td>
           <td>
-            <button class="btn btn-sm btn-danger" (click)="deleteUser(user)" [disabled]="auth.currentUser._id === user._id">
+            <button class="btn btn-sm btn-warning" (click)="enableEditing(user)"><i class="fa fa-pencil"></i></button> <button class="btn btn-sm btn-danger" (click)="deleteUser(user)" [disabled]="auth.currentUser._id === user._id">
               <i class="fa fa-trash"></i>
-            </button>
+            </button> 
           </td>
         </tr> 
  
       </tbody>
+      <tbody>
+         
+      </tbody>
     </table>
+    <div  *ngIf="isEditing">
+      <form  class="form-inline" #form="ngForm" (ngSubmit)="editUser(user)" style="display:inline">
+        <div class="form-group">
+         <input style="width:100px"class="form-control" type="text" name="username" [(ngModel)]="user.username" placeholder="Username" required>
+        </div>
+       <div class="form-group">
+          <input style="width:100px" class="form-control" type="email" name="email" [(ngModel)]="user.email" placeholder="email" min="0" required>
+        </div>
+        <div class="form-group">
+          <input style="width:100px" class="form-control" type="text" name="role" [(ngModel)]="user.role" placeholder="Role" step="any" min="0" required>
+        </div>
+        <div class="form-group">
+           <input style="width:180px" class="form-control" type="text" name="address" [(ngModel)]="user.address" placeholder="Address" required>
+        </div>
+        <div class="form-group">
+            <input style="width:100px" class="form-control" type="text" name="phoneno" [(ngModel)]="user.phoneno" placeholder="Phone Number" required>
+         </div>
+        <div class="form-group">
+            <input style="width:100px" class="form-control" type="text" name="dob" [(ngModel)]="user.dob" placeholder="Role" required>
+        </div>
+        <div class="form-group">
+          <input style="width:100px" class="form-control" type="text" name="skill" [(ngModel)]="user.skill" placeholder="Skills"required>
+        </div>
+        <div class="form-group">
+          <input style="width:100px" class="form-control" type="text" name="status" [(ngModel)]="user.status" placeholder="Status"required>
+        </div>
+        <div class="form-group">
+          <button class="btn btn-sm btn-primary" type="submit" [disabled]="!form.form.valid"><i class="fa fa-floppy-o"></i> Save</button>
+           <button class="btn btn-sm btn-warning" (click)="cancelEditing()"><i class="fa fa-times"></i> Cancel</button>
+        </div>
+        </form>
+    </div>
   </div>
 </div>

@@ -11,6 +11,8 @@ import { UserService } from '../services/user.service';
 })
 export class AdminComponent implements OnInit {
 
+  user = {};
+  isEditing = false;
   users = [];
   isLoading = true;
 
@@ -31,6 +33,28 @@ export class AdminComponent implements OnInit {
       () => this.isLoading = false
     );
   }
+  enableEditing(user) {
+    this.isEditing = true;
+    this.user = user;
+  }
+  cancelEditing() {
+    this.isEditing = false;
+    this.user = {};
+    this.toast.setMessage('item editing cancelled.', 'warning');
+    // reload the cats to reset the editing
+    this.getUsers();
+  }
+  editUser(user) {
+    this.userService.editUser(user).subscribe(
+      res => {
+        this.isEditing = false;
+        this.user = user;
+        this.toast.setMessage('item edited successfully.', 'success');
+      },
+      error => console.log(error)
+    );
+  }
+
 
   deleteUser(user) {
     this.userService.deleteUser(user).subscribe(
