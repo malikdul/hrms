@@ -10,136 +10,208 @@ import * as nodemailer from 'nodemailer';
 //const router= require('express').Router();
 export default class UserCtrl extends BaseCtrl {
   model = User;
-  sendemail=new EmailSender();
-  
+  sendemail = new EmailSender();
+
   //Login 
   login = (req, res) => {
-    
+
     this.model.findOne({ email: req.body.email }, (err, user) => {
-      if(err){ 
-        res.status(400).json({message:'Error Generated!'});
+      if (err) {
+        res.status(400).json({ message: 'Error Generated!' });
       }
       else if (user) {
-      if(user.verify==true){
-      user.comparePassword(req.body.password, (error, isMatch) => {
-       // console.log("pass",req.body.password);
-        if (!isMatch) { return res.status(403).json({message:'Password Doesnot Match!'}); }
-        const token = jwt.sign({ user: user }, process.env.SECRET_TOKEN); // , { expiresIn: 10 } seconds
-        //console.log("Sending token to user",token);
-        res.status(200).json({ token: token });
-        });
-      } 
-      else{
-        res.status(400).json({message:'Message: Verify your account!'});     
+        if (user.verify == true) {
+          if (user.status == true) {
+            if (user.deleted == false) {
+              user.comparePassword(req.body.password, (error, isMatch) => {
+                // console.log("pass",req.body.password);
+                if (!isMatch) { return res.status(403).json({ message: 'Password Doesnot Match!' }); }
+                const token = jwt.sign({ user: user }, process.env.SECRET_TOKEN); // , { expiresIn: 10 } seconds
+                //console.log("Sending token to user",token);
+                res.status(200).json({ token: token });
+
+              });
+            } else {
+              res.status(400).json({ message: 'Alert: Your Account has been Expelled ' });
+            }
+          } else {
+            res.status(400).json({ message: 'Deactivated: Contact Admin to Active your account!' });
+          }
+        }
+        else {
+          res.status(400).json({ message: 'Message: Verify your account!' });
+        }
       }
-    }
-    else{
-      res.status(400).json({message:'No user Found!'});
-    }
-  } );
+      else {
+        res.status(400).json({ message: 'No user Found!' });
+      }
+    });
   }
-//sending mail
-  sendregmail(emailuser){
-    let subject= 'Email Verification';
-   // console.log("*********************"+emailuser);
-    this.sendemail.sendmailregisteration(subject,emailuser)
+  //sending mail
+  sendregmail(emailuser) {
+    let subject = 'Email Verification';
+    // console.log("*********************"+emailuser);
+    this.sendemail.sendmailregisteration(subject, emailuser)
   }
 
 
-//verifying user
+  //verifying user
   verify = (req, res) => {
     this.model.findOne({ _id: req.params.id }, (err, user) => {
       if (!user) { return res.sendStatus(403); }
       //ser verify account to true;
+      console.log('id:', req.params.id);
       user.verify = true;
-      this.model.findById(req.params.id, (err, user) => {  
+      this.model.findById(req.params.id, (err, user) => {
         if (err) {
-            res.status(500).send(err);
-        } else {
-            user.verify=true;
-            // Save the updated document back to the database
-            user.save((err, user) => {
-                if (err) {
-                    res.status(500).send(err)
-                }
-                  //  console.log('Responce Sent!');
-                res.status(200).json('Yor Email has been verified!!!');
-            });
-        }
-    });
-  }
-      )};
-      //verify email for resetpassword 
-      resetpasswordverify = (req, res) => {
-        // retrieve the password field
-        var password = req.body.password;
-
-        // update it with hash
-        req.body.password = bcrypt.hashSync(password);     
-        console.log('password',req.body.password);
-        this.model.findOneAndUpdate({ _id: req.body.id}, req.body, (err  ) => {
-          //console.log(req.body.password);
-          if (err) { return console.error(err); }
-          res.sendStatus(200);
-        });
-      }
-//reset password 
-resetpassword = (req, res) => {
-  this.model.findOne({ _id: req.params.id }, (err, user) => {
-    console.log("Enter in resetpassword method");
-    if (!user) { return res.sendStatus(403); }
-    this.model.findById(req.params.id, (err, user) => {  
-      if (err) {
           res.status(500).send(err);
-      } else {
-          user.verify=true;
+        } else {
+          user.status = true;
+          user.verify = true;
+          console.log('verify boolean', user.verify);
           // Save the updated document back to the database
           user.save((err, user) => {
-              if (err) {
-                  res.status(500).send(err)
-              }
-              res.status(200).json('Message: Password Reset. Now You Can Log into Your Account!');
+            if (err) {
+              res.status(500).send(err)
+            }
+            //  console.log('Responce Sent!');
+            res.status(200).json('Yor Email has been verified!!!');
           });
-      }
-  });
-}
-    )};
+        }
+      });
+    }
+    )
+  };
+  //verify email for resetpassword 
+  resetpasswordverify = (req, res) => {
+    // retrieve the password field
+    var password = req.body.password;
+
+    // update it with hash
+    req.body.password = bcrypt.hashSync(password);
+    console.log('password', req.body.password);
+    this.model.findOneAndUpdate({ _id: req.body.id }, req.body, (err) => {
+      //console.log(req.body.password);
+      if (err) { return console.error(err); }
+      res.sendStatus(200);
+    });
+  }
+  //reset password 
+  resetpassword = (req, res) => {
+    this.model.findOne({ _id: req.params.id }, (err, user) => {
+      console.log("Enter in resetpassword method");
+      if (!user) { return res.sendStatus(403); }
+      this.model.findById(req.params.id, (err, user) => {
+        if (err) {
+          res.status(500).send(err);
+        } else {
+          user.verify = true;
+          // Save the updated document back to the database
+          user.save((err, user) => {
+            if (err) {
+              res.status(500).send(err)
+            }
+            res.status(200).json('Message: Password Reset. Now You Can Log into Your Account!');
+          });
+        }
+      });
+    }
+    )
+  };
   //send mail for resetpassword
-  resetpasssendmail= (user) =>{
-    let subject= 'Reset Password';
+  resetpasssendmail = (user) => {
+    let subject = 'Reset Password';
     // console.log("*********************"+emailuser);
-     this.sendemail.sendresetmail(subject,user)
+    this.sendemail.sendresetmail(subject, user)
   }
 
-//function override of insert 
+  //function override of insert 
   insert = (req, res) => {
-    console.log('Enter in isnert function');
+    // console.log('Enter in isnert function');
+
+    this.model.find({ email: req.body.email }, (err, userlist) => {
+      console.log('User got: ', userlist);
+      const user = userlist[0];
+      if (user.deleted) {
+
+        console.log('user was deleted');
+        user.username = req.body.username;
+        user.password = req.body.password;
+        user.status = false;
+        user.verify = false;
+        user.deleted = false;
+        console.log('user.save ka function');
+        user.save((err, user) => {
+          if (err) {
+            res.status(500).send(err)
+          } else {
+            console.log('user deleted added');
+            this.sendregmail(user);
+            res.sendStatus(200);
+          }
+        });
+      }
+      else {
+        console.log('duplicate user')
+        const user = new User(req.body);
+        user.status = false;
+        user.verify = false;
+        user.deleted = false;
+        user.save((err, item) => {
+          // 11000 is the code for duplicate key error
+          if (err && err.code === 11000) {
+            res.sendStatus(400);
+          }
+          if (err) {
+            // console.log('Insertion Error: ', req);        
+            return console.error(err);
+          }
+          this.sendregmail(user);
+          res.status(200).json(item);
+        });
+      }
+      /* if(user.deleted==true)
+       {
+       
+     }
+     });   
+   }
+       else{
+ 
+         return console.error(err);
+       } */
+    });
+
+    /*console.log('outside deleted user');
     const user = new User(req.body);
-     user.verify=false;
+    user.status=false; 
+    user.verify=false;
+    user.deleted=false;
        user.save((err, item) => {
       // 11000 is the code for duplicate key error
       if (err && err.code === 11000) {
         res.sendStatus(400);
       }
       if (err) {
-        console.log('Insertion Error: ', req);        
+       // console.log('Insertion Error: ', req);        
         return console.error(err);
       }
       this.sendregmail(user);
       res.status(200).json(item);
-    });
-   
+    });*/
+
   }
 
-   // Get by email
-   forgotpassword = (req, res) => {
+
+  // Get by email
+  forgotpassword = (req, res) => {
     const user = new User(req.body);
-    user.verify=false;
-    console.log("recieved email"+ req.body.email);
+    user.verify = false;
+    console.log("recieved email" + req.body.email);
     this.model.findOne({ email: req.body.email }, (err, obj) => {
-    console.log("forgot passwd:"+req.body.email);
-    console.log("object passwd"+ obj.email);
-      if(obj.email == req.body.email){
+      console.log("forgot passwd:" + req.body.email);
+      console.log("object passwd" + obj.email);
+      if (obj.email == req.body.email) {
         //console.log("Email found!");
         res.status(200).json();
       }

@@ -24,6 +24,11 @@ export class UserService {
     return this.http.put('/api/user/resetpassword', JSON.stringify(user), this.options);
   }
 
+  verifiedmail(user): Observable<any> {
+    //console.log("reset password request recieved.");
+    return this.http.put(`/api/user/verifiedmail/${user._id}`, JSON.stringify(user), this.options);
+  }
+
   login(credentials): Observable<any> {
     return this.http.post('/api/login', JSON.stringify(credentials), this.options);
   }
@@ -47,9 +52,7 @@ export class UserService {
   editUser(user): Observable<any> {
     return this.http.put(`/api/user/${user._id}`, JSON.stringify(user), this.options);
   }
-  verifiedmail(user): Observable<any> {
-    return this.http.get(`/api/user/verifiedmail/${user._id}`).map(res => res.json());
-  }
+ 
   deleteUser(user): Observable<any> {
     return this.http.delete(`/api/user/${user._id}`, this.options);
   }

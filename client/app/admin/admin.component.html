@@ -10,6 +10,7 @@
         <tr>
           <th>Username</th>
           <th>Email</th>
+          <th>Status</th>
           <th>Role</th>
           <th>Actions</th>
         </tr>
@@ -19,17 +20,20 @@
           <td colspan="4">There are no registered users.</td>
         </tr>  
       </tbody>
-      <tbody>
-        <tr *ngFor="let user of users">
+      <tbody >
+        <tr *ngFor="let user of users" >
           <td>{{user.username}}</td>
-          <td>{{user.email}}</td>
+          <td>{{user.email}} </td>
+          <td *ngIf="user.status === true">Active</td>
+          <td *ngIf="user.status !== true">Deactive</td>
           <td>{{user.role}}</td>
           <td>
             <button class="btn btn-sm btn-danger" (click)="deleteUser(user)" [disabled]="auth.currentUser._id === user._id">
               <i class="fa fa-trash"></i>
             </button>
           </td>
-        </tr>  
+        </tr> 
+ 
       </tbody>
     </table>
   </div>

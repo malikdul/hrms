@@ -25,9 +25,9 @@ const routes: Routes = [
   { path: 'logout', component: LogoutComponent },
   { path: 'account', component: AccountComponent, canActivate: [AuthGuardLogin] },
   { path: 'admin', component: AdminComponent, canActivate: [AuthGuardAdmin] },
-  { path: 'notfound', component: NotFoundComponent },
-  { path: '**', redirectTo: '/notfound' },
   { path: 'verifiedmail/:id', component: VerifiedmailComponent },
+  { path: 'notfound', component: NotFoundComponent },
+  { path: '**', redirectTo: '/notfound' }
 ];
 
 @NgModule({

@@ -35,9 +35,9 @@ sendmailregisteration = (subject: string, obj) =>{
       };
       
       this.transporter.sendMail(mailOption,function(error,info){
-        console.log('Error in send mail: ',error);
+       // console.log('Error in send mail: ',error);
         if(error){
-          console.log('Sending mail error!');  
+         // console.log('Sending mail error!');  
           console.log(error);
         }else{
           console.log('Message Sent'+info.response);
@@ -46,7 +46,7 @@ sendmailregisteration = (subject: string, obj) =>{
     }
 
   sendresetmail = (subject: string, obj) =>{
-    console.log("**** *****send mail Reset*******"+obj.id);
+   // console.log("**** *****send mail Reset*******"+obj.id);
     //console.log(obj.username);
  
       let verifylink= "http://localhost:4200/resetpassword/"+obj.id;

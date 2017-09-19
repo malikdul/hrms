@@ -24,7 +24,9 @@ export class AdminComponent implements OnInit {
 
   getUsers() {
     this.userService.getUsers().subscribe(
-      data => this.users = data,
+      data =>{
+       this.users = data
+   },
       error => console.log(error),
       () => this.isLoading = false
     );
@@ -32,8 +34,11 @@ export class AdminComponent implements OnInit {
 
   deleteUser(user) {
     this.userService.deleteUser(user).subscribe(
-      data => this.toast.setMessage('user deleted successfully.', 'success'),
+      res => {
+        console.log('Client view',res);
+        this.toast.setMessage('user deleted successfully.', 'success')} ,
       error => console.log(error),
+
       () => this.getUsers()
     );
   }

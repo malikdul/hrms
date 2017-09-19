@@ -4,9 +4,10 @@ abstract class BaseCtrl {
 
   // Get all
   getAll = (req, res) => {
-    this.model.find({}, (err, docs) => {
+    this.model.find({deleted: false}, (err, docs) => {
+
       if (err) { return console.error(err); }
-      res.json(docs);
+     res.json(docs);
     });
   }
 
@@ -52,9 +53,19 @@ abstract class BaseCtrl {
 
   // Delete by id
   delete = (req, res) => {
-    this.model.findOneAndRemove({ _id: req.params.id }, (err) => {
+    this.model.findById({ _id: req.params.id }, (err,user) => {
       if (err) { return console.error(err); }
-      res.sendStatus(200);
+      user.deleted=true;
+      user.save((err, user) => {
+        if (err) {
+            res.status(500).send(err)
+        }
+       else
+        {
+          console.log('user deleted',user.deleted);
+       //console.log('responce sent',res);
+        res.sendStatus(200);}
+    });
     });
   }
 }

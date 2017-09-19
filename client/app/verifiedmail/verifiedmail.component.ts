@@ -18,8 +18,8 @@ import { Router } from '@angular/router';
         private router: Router,
         private userService: UserService) { }
 
-
-  verifiedmail(res,err) {
+ 
+  verifiedmail() {
     this.userService.verifiedmail(this.user).subscribe(
       res => {
     
