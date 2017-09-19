@@ -5,6 +5,7 @@ import { CatsComponent } from './cats/cats.component';
 import { AboutComponent } from './about/about.component';
 import { RegisterComponent } from './register/register.component';
 import { LoginComponent } from './login/login.component';
+import { LoginadminComponent } from './loginadmin/loginadmin.component';
 import { forgotpasswordComponent } from './forgotpassword/forgotpassword.component';
 import { ResetpasswordComponent } from './resetpassword/resetpassword.component';
 import { LogoutComponent } from './logout/logout.component';
@@ -20,14 +21,15 @@ const routes: Routes = [
   { path: 'cats', component: CatsComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'login', component: LoginComponent },
+  { path: 'loginadmin', component: LoginadminComponent },
   { path: 'forgotpassword', component: forgotpasswordComponent },
   { path: 'resetpassword/:id', component: ResetpasswordComponent },
   { path: 'logout', component: LogoutComponent },
   { path: 'account', component: AccountComponent, canActivate: [AuthGuardLogin] },
   { path: 'admin', component: AdminComponent, canActivate: [AuthGuardAdmin] },
   { path: 'notfound', component: NotFoundComponent },
-  { path: '**', redirectTo: '/notfound' },
   { path: 'verifiedmail/:id', component: VerifiedmailComponent },
+  { path: '**', redirectTo: '/notfound' }
 ];
 
 @NgModule({
