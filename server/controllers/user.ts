@@ -131,27 +131,32 @@ export default class UserCtrl extends BaseCtrl {
 
     this.model.find({ email: req.body.email }, (err, userlist) => {
       console.log('User got: ', userlist);
-      const user = userlist[0];
-      if (user.deleted) {
-
-        console.log('user was deleted');
-        user.username = req.body.username;
-        user.password = req.body.password;
-        user.status = false;
-        user.verify = false;
-        user.deleted = false;
-        console.log('user.save ka function');
-        user.save((err, user) => {
-          if (err) {
-            res.status(500).send(err)
-          } else {
-            console.log('user deleted added');
-            this.sendregmail(user);
-            res.sendStatus(200);
-          }
-        });
+      if(userlist.length===1)
+      {
+        const user = userlist[0];
+        if(user.deleted) {
+          console.log('user was deleted');
+          user.username = req.body.username;
+          user.password = req.body.password;
+          user.status = false;
+          user.verify = false;
+          user.deleted = false;
+          console.log('user.save ka function');
+          user.save((err, user) => {
+            if (err) {
+              res.status(500).send(err)
+            } else {
+              console.log('user deleted added');
+              this.sendregmail(user);
+              res.sendStatus(200);
+            }
+          });
+        }
+        else{
+          res.sendStatus(400);
+        }
       }
-      else {
+      else{
         console.log('duplicate user')
         const user = new User(req.body);
         user.status = false;
@@ -170,7 +175,6 @@ export default class UserCtrl extends BaseCtrl {
           res.status(200).json(item);
         });
       }
-
     });
   }
 
