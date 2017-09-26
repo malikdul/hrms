@@ -58,7 +58,7 @@ export class RegisterComponent implements OnInit {
   register() {
     //console.log(this.re_password.value);
     if(this.password.value==this.re_password.value){
-    this.userService.register(this.registerForm.value).subscribe(
+    this.userService.register({pinfo:this.registerForm.value}).subscribe(
       
       res => {
         this.toast.setMessage('you successfully registered!', 'success');

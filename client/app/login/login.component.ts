@@ -42,7 +42,7 @@ export class LoginComponent implements OnInit {
   }
 
   login() {
-    this.auth.login(this.loginForm.value).subscribe(
+    this.auth.login({pinfo:this.loginForm.value}).subscribe(
       res => {
         //console.log(this.auth.currentUser);
         this.router.navigate(['/'])

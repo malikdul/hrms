@@ -28,7 +28,7 @@ sendmailregisteration = (subject: string, obj) =>{
  
       let verifylink= "http://localhost:4200/api/user/verifiedmail/"+obj.id;
       let mailOption: nodemailer.SendMailOptions= {
-        to: obj.email,
+        to: obj.pinfo.email,
         from: process.env.EMAIL_USER,
         subject: subject,
         html: this.registrationEmailTemplate({model: obj , verify: verifylink})      
@@ -51,7 +51,7 @@ sendmailregisteration = (subject: string, obj) =>{
  
       let verifylink= "http://localhost:4200/resetpassword/"+obj.id;
       let mailOption: nodemailer.SendMailOptions= {
-        to: obj.email,
+        to: obj.pinfo.email,
         from: process.env.EMAIL_USER,
         subject: subject,
         html: this.resetPasswordEmailTemplate({model: obj , verify: verifylink})      

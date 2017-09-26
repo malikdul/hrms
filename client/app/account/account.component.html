@@ -3,40 +3,288 @@
 <app-toast [message]="toast.message"></app-toast>
 
 <div class="card" *ngIf="!isLoading">
-  <h4 class="card-header">Profile settings</h4>
-  <div class="card-block">
-    <form #accountForm="ngForm" (ngSubmit)="save(user)">
+
+  <div class="card-block" *ngIf="isProfileEditing">
+
+    <form [formGroup]="profileForm" (ngSubmit)="save()">
+      <button class="btn btn-sm btn-danger float-sm-right  " (click)="reload()"><i class="fa fa-times"></i></button>
       <div class="input-group">
         <span class="input-group-addon"><i class="fa fa-user"></i></span>
-        <input class="form-control" type="text" name="username" [(ngModel)]="user.username" placeholder="Username" required>
+        <input class="form-control" type="text" formControlName="username" name="username" [(ngModel)]="user.pinfo.username" placeholder="Username"
+          required>
       </div>
       <div class="input-group">
         <span class="input-group-addon"><i class="fa fa-envelope"></i></span>
-        <input class="form-control" type="email" name="email" [(ngModel)]="user.email" placeholder="Email" required>
+        <input class="form-control" type="email" name="email" formControlName="email" [(ngModel)]="user.pinfo.email" placeholder="Email"
+          required>
       </div>
       <div class="input-group">
         <span class="input-group-addon"><i class="fa fa-black-tie"></i></span>
-        <input class="form-control" type="text" name="role" [(ngModel)]="user.role" placeholder="Role" required>
+        <input class="form-control" type="text" name="role" formControlName="role" [(ngModel)]="user.pinfo.role" placeholder="Role"
+          required>
       </div>
       <div class="input-group">
         <span class="input-group-addon"><i class="fa fa-phone-square"></i></span>
-        <input class="form-control" type="text" name="phoneno" [(ngModel)]="user.phoneno" placeholder="Phone Number" required>
+        <input class="form-control" type="text" name="phoneno" formControlName="phoneno" [(ngModel)]="user.pinfo.phoneno" placeholder="Phone Number"
+          required>
       </div>
       <div class="input-group">
         <span class="input-group-addon"><i class="fa fa-address-book"></i></span>
-        <input class="form-control" type="text" name="address" [(ngModel)]="user.address" placeholder="Address" required>
+        <input class="form-control" type="text" name="address" formControlName="address" [(ngModel)]="user.pinfo.address" placeholder="Address"
+          required>
       </div>
       <div class="input-group">
         <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-        <input class="form-control" type="text" name="dob" [(ngModel)]="user.dob" placeholder="DOB" required>
+        <input class="form-control" type="text" name="dob" formControlName="dob" [(ngModel)]="user.pinfo.dob" placeholder="DOB" required>
       </div>
-      <div class="input-group">
-        <span class="input-group-addon"><i class="fa fa-wrench"></i></span>
-        <input class="form-control" type="text" name="skill" [(ngModel)]="user.skill" placeholder="Skills" required>
-      </div>
-      <button class="btn btn-primary" type="submit" [disabled]="!accountForm.form.valid">
-        <i class="fa fa-save"></i> Save
-      </button>
+      <button class="btn btn-success" type="submit"><i class=""></i>Add</button>
     </form>
   </div>
+  <table class="table table-bordered table-striped">
+    <th style="background:white" class="card-header" colspan="3">
+      <h4>
+        <mark> Profile settings</mark>
+        <button *ngIf="!isProfileEditing" class="btn btn-sm btn-warning float-sm-right " (click)="enableProfileEditing()"><i class="fa fa-pencil"></i></button>
+      </h4>
+    </th>
+    <tr>
+      <td>
+        <b>Username:</b> {{user.pinfo.username}}
+      </td>
+      <td>
+        <b>Email:</b> {{user.pinfo.email}}
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <b>Role:</b> {{user.pinfo.role}}
+      </td>
+      <td>
+        <b>Contact No:</b> {{user.pinfo.phoneno}}
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <b>Address:</b> {{user.pinfo.address}}
+      </td>
+      <td><b>Date of Birth:</b> {{user.pinfo.dob}}</td>
+    </tr>
+  </table>
+
+
+
+
+  <!-- Adding New Skills -->
+  <div class="card-block" *ngIf="isaddskill">
+    <button class="btn btn-sm btn-danger float-sm-right  " (click)="reload()"><i class="fa fa-times"></i></button>
+    <form [formGroup]="skillForm" name="skillForm" (ngSubmit)="addskill()">
+      <div class="input-group">
+        <span class="input-group-addon"><i class="fa fa-wrench  "></i></span>
+        <input class="form-control" type="text" formControlName="name" name="namefield" placeholder="Name of Skill" required>
+      </div>
+      <div class="input-group">
+        <span class="input-group-addon"><i class="fa fa-certificate  "></i></span>
+        <input class="form-control" type="number" formControlName="experience" name="experiencefield" placeholder="Experience in Years"
+          required>
+      </div>
+      <button class="btn btn-success" type="submit"><i class=""></i>Add</button>
+    </form>
+  </div>
+  <!-- Editing Old Skills -->
+  <div class="card-block" *ngIf="isskillediting ">
+    <div *ngIf="isskillediting"> <button class="btn btn-sm btn-danger float-sm-right  " (click)="reload()"><i class="fa fa-times"></i></button></div>
+    <form [formGroup]="skillForm" name="skillForm" (ngSubmit)="save()">
+      <div class="input-group">
+        <span class="input-group-addon"><i class="fa fa-wrench"></i></span>
+        <input class="form-control" type="text" formControlName="name" name="namefield" [(ngModel)]="user.skills[index].name" placeholder="Name of Skill"
+          required>
+      </div>
+      <div class="input-group">
+        <span class="input-group-addon"><i class="fa fa-certificate"></i></span>
+        <input class="form-control" type="number" formControlName="experience" name="experiencefield" [(ngModel)]="user.skills[index].experience"
+          placeholder="Experience in Years" required>
+      </div>
+      <button class="btn btn-info" type="submit"><i class=""></i>Update</button>
+      <button class="btn btn-danger" (click)="delete()" ><i class=""></i>Delete</button>
+    </form>
+  </div>
+
+
+  <table class="table table-bordered table-striped card-block">
+    <th style="background: white" class="card-header" colspan="3">
+      <h4>
+        <mark>Skills</mark>
+        <button *ngIf="!isaddskill && !isskillediting" class="btn btn-sm btn-success float-xl-right" (click)="enableaddskill()"><i class="fa fa-plus-circle"></i></button>
+      </h4>
+    </th>
+    <!-- Showing values -->
+    <tr *ngFor="let skill of user.skills; let i=index ">
+      <td><b>Skill:</b>{{skill.name}}</td>
+      <td><b>Experience:</b> {{skill.experience}} years
+        <button class="btn btn-sm btn-warning float-sm-right  " (click)="enableskillediting(i)"><i class="fa fa-pencil"></i></button>
+      </td>
+    </tr>
+  </table>
+
+
+
+  <!-- Adding new Education -->
+  <div class="card-block" *ngIf="isaddeducation">
+    <button class="btn btn-sm btn-danger float-sm-right  " (click)="reload()"><i class="fa fa-times"></i></button>
+    <form [formGroup]="educationForm" (ngSubmit)="addeducation()">
+      <div class="input-group">
+        <span class="input-group-addon"><i class="fa fa-graduation-cap"></i></span>
+        <input class="form-control" type="text" formControlName="degreename" name="degreename" placeholder="Name of Degree" required>
+      </div>
+      <div class="input-group">
+        <span class="input-group-addon"><i class="fa fa-book"></i></span>
+        <input class="form-control" type="text" formControlName="subject" name="subject" placeholder="Major subjects" required>
+      </div>
+      <div class="input-group">
+        <span class="input-group-addon"><i class="fa fa-university  "></i></span>
+        <input class="form-control" type="text" formControlName="institution" name="institution" placeholder="Name of Institution"
+          required>
+      </div>
+      <div class="input-group">
+        <span class="input-group-addon"><i class="fa fa-clock-o"></i></span>
+        <input class="form-control" type="text" formControlName="completionyear" name="completionyear" placeholder="Completing Years!!"
+          required>
+      </div>
+      <div class="input-group">
+        <span class="input-group-addon"><i class="fa fa-percent  "></i></span>
+        <input class="form-control" type="text" name="percentage" formControlName="percentage" placeholder="Percentage Acquired!"
+          required>
+      </div>
+      <button class="btn btn-success" type="submit"><i class=""></i>Add</button>
+    </form>
+  </div>
+  <!-- Editing Old Education -->
+  <div class="card-block" *ngIf="iseducationediting">
+    <button class="btn btn-sm btn-danger float-sm-right  " (click)="reload()"><i class="fa fa-times"></i></button>
+    <form [formGroup]="educationForm" (ngSubmit)="save()">
+      <div class="input-group">
+        <span class="input-group-addon"><i class="fa fa-graduation-cap"></i></span>
+        <input class="form-control" type="text" formControlName="degreename" name="degreename" [(ngModel)]="user.educations[index].degreename"
+          placeholder="Name of Degree" required>
+      </div>
+      <div class="input-group">
+        <span class="input-group-addon"><i class="fa fa-book"></i></span>
+        <input class="form-control" type="text" formControlName="subject" name="subject" [(ngModel)]="user.educations[index].subject"
+          placeholder="Major subjects" required>
+      </div>
+      <div class="input-group">
+        <span class="input-group-addon"><i class="fa fa-university"></i></span>
+        <input class="form-control" type="text" formControlName="institution" name="institution" [(ngModel)]="user.educations[index].institution"
+          placeholder="Name of Institution" required>
+      </div>
+      <div class="input-group">
+        <span class="input-group-addon"><i class="fa fa-clock-o"></i></span>
+        <input class="form-control" type="text" formControlName="completionyear" name="completionyear" [(ngModel)]="user.educations[index].completionyear"
+          placeholder="Completing Years!!" required>
+      </div>
+      <div class="input-group">
+        <span class="input-group-addon"><i class="fa fa-percent"></i></span>
+        <input class="form-control" type="text" name="percentage" formControlName="percentage" [(ngModel)]="user.educations[index].percentage"
+          placeholder="Percentage Acquired!" required>
+      </div>
+      <button class="btn btn-info" type="submit"><i class=""></i>Update</button>
+      <button class="btn btn-danger" (click)="delete()" ><i class=""></i>Delete</button>
+    </form>
+  </div>
+
+  <!-- Showing Education -->
+  <table class="table table-bordered table-striped card-block" *ngIf="!iseducationeditting">
+    <th style="background:white" class="card-header" colspan="2">
+      <h4>
+        <mark>Education</mark>
+        <button *ngIf="!isaddeducation && !iseducationediting" class="btn btn-sm btn-success float-sm-right" (click)="enableaddeducation()"><i class="fa fa-plus-circle"></i></button>
+      </h4>
+    </th>
+    <tbody *ngFor="let education of user.educations; let i=index">
+      <tr style="background:lightblue">
+        <td><b>Name of Degree:</b> <em> {{education.degreename}}</em></td>
+        <td><button class="btn btn-sm btn-warning float-sm-right  " (click)="enableeducationediting(i)"><i class="fa fa-pencil"></i></button></td>
+      </tr>
+      <tr>
+        <td><b>Major Subjects:</b> {{education.subject}}</td>
+        <td><b>Institution:</b> {{education.institution}}</td>
+      </tr>
+      <tr>
+        <td><b>Completed In: </b> {{education.completionyear}}</td>
+        <td><b>Obtained %age: </b> {{education.percentage}}</td>
+      </tr>
+    </tbody>
+  </table>
+
+
+
+  <!-- Adding more Job History-->
+  <div class="card-block" *ngIf="isaddjob">
+    <button class="btn btn-sm btn-danger float-sm-right  " (click)="reload()"><i class="fa fa-times"></i></button>
+    <form [formGroup]="jobhistoryForm" (ngSubmit)="addjob()">
+      <div class="input-group">
+        <span class="input-group-addon"><i class="fa fa-building"></i></span>
+        <input class="form-control" type="text" name="orgname" formControlName="orgname" placeholder="Name of Organization worked with"
+          required>
+      </div>
+      <div class="input-group">
+        <span class="input-group-addon"><i class="fa fa-briefcase"></i></span>
+        <input class="form-control" type="text" name="desg" formControlName="desg" placeholder="Worked As a" required>
+      </div>
+      <div class="input-group">
+        <span class="input-group-addon"><i class="fa fa-clock-o"></i></span>
+        <input class="form-control" type="text" name="dur" formControlName="dur" placeholder="No of Years Worked" required>
+      </div>
+      <button class="btn btn-success" type="submit"><i class=""></i>Add</button>
+
+    </form>
+  </div>
+  <!-- Editing Old Job History -->
+  <div class="card-block" *ngIf="isjobediting">
+    <button class="btn btn-sm btn-danger float-sm-right  " (click)="reload()"><i class="fa fa-times"></i></button>
+    <form [formGroup]="jobhistoryForm" (ngSubmit)="save()">
+      <div class="input-group">
+        <span class="input-group-addon"><i class="fa fa-building"></i></span>
+        <input class="form-control" type="text" name="orgname" formControlName="orgname" [(ngModel)]="user.jobhistories[index].orgname"
+          placeholder="Name of Organization worked with" required>
+      </div>
+      <div class="input-group">
+        <span class="input-group-addon"><i class="fa fa-briefcase"></i></span>
+        <input class="form-control" type="text" name="desg" formControlName="desg" [(ngModel)]="user.jobhistories[index].desg" placeholder="Worked As a"
+          required>
+      </div>
+      <div class="input-group">
+        <span class="input-group-addon"><i class="fa fa-clock-o"></i></span>
+        <input class="form-control" type="text" name="dur" formControlName="dur" [(ngModel)]="user.jobhistories[index].dur" placeholder="No of Years Worked"
+          required>
+      </div>
+      <button class="btn btn-info" type="submit"><i class=""></i>Update</button>
+      <button class="btn btn-danger" (click)="delete()" ><i class=""></i>Delete</button>
+    </form>
+  </div>
+
+  <!-- Showing Old Job History -->
+  <table *ngIf="!isjobediting" class="table table-bordered table-striped card-block">
+    <th style="background:white" class="card-header" colspan="2">
+      <h4>
+        <mark>Job History</mark>
+        <button *ngIf="!isaddjob && !isjobediting" class="btn btn-sm btn-success float-sm-right" (click)="enableaddjob()"><i class="fa fa-plus-circle"></i></button>
+      </h4>
+    </th>
+    <tbody *ngFor="let jobhistory of user.jobhistories; let i=index">
+      <tr style="background:lightblue">
+        <td class=""><b>Organization Name: </b> {{jobhistory.orgname}}</td>
+        <td><button class="btn btn-sm btn-warning float-sm-right  " (click)="enablejobediting(i)"><i class="fa fa-pencil"></i></button></td>
+      </tr>
+      <tr>
+        <td><b>Designation: </b> {{jobhistory.desg}}</td>
+        <td><b>Duration: </b> {{jobhistory.dur}}</td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <h4 class="card-header">
+    <mark>Docs Attached</mark>
+  </h4>
 </div>

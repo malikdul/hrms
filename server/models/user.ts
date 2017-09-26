@@ -2,36 +2,67 @@ import * as bcrypt from 'bcryptjs';
 import * as mongoose from 'mongoose';
 
 const userSchema = new mongoose.Schema({
-  username: String,
-  email: { type: String, unique: true, lowercase: true, trim: true },
-  password: String,
-  role: String,
-  status: Boolean,
-  verify:Boolean,
-  deleted: Boolean,
-  phoneno:String,
-  address:String,
-  dob:String,
-  skill:String
+  pinfo: {
+    username: String,
+    email: { type: String, unique: true, lowercase: true, trim: true },
+    password: String,
+    role: String,
+    status: Boolean,
+    verify: Boolean,
+    deleted: Boolean,
+    phoneno: String,
+    address: String,
+    dob: String
 
-});
+  },
+
+  skills: [{
+    name: String,
+    experience: Number
+  }],
+
+  educations: [{
+    degreename: String,
+    subject: String,
+    institution: String,
+    completionyear: String,
+    percentage: String
+
+  }],
+
+  jobhistories:[ {
+    orgname: String,
+    desg: String,
+    dur: String
+
+  }],
+
+  docs: [{
+    path: String,
+    name: String,
+    type: String
+  }]
+}
+);
 
 // Before saving the user, hash the password
-userSchema.pre('save', function(next) {
+userSchema.pre('save', function (next) {
   const user = this;
-  if (!user.isModified('password')) { return next(); }
-  bcrypt.genSalt(10, function(err, salt) {
+  if (!user.isModified('pinfo.password')) { return next(); }
+  bcrypt.genSalt(10, function (err, salt) {
     if (err) { return next(err); }
-    bcrypt.hash(user.password, salt, function(error, hash) {
+    bcrypt.hash(user.pinfo.password, salt, function (error, hash) {
       if (error) { return next(error); }
-      user.password = hash;
+      user.pinfo.password = hash;
+      //console.log('encrypted password: ', user.pinfo.password);
       next();
+      //console.log('after next');
     });
   });
 });
 
-userSchema.methods.comparePassword = function(candidatePassword, callback) {
-  bcrypt.compare(candidatePassword, this.password, function(err, isMatch) {
+userSchema.methods.comparePassword = function (candidatePassword, callback) {
+  bcrypt.compare(candidatePassword, this.pinfo.password, function (err, isMatch) {
     if (err) { return callback(err); }
     callback(null, isMatch);
   });
@@ -39,7 +70,7 @@ userSchema.methods.comparePassword = function(candidatePassword, callback) {
 
 // Omit the password when returning a user
 userSchema.set('toJSON', {
-  transform: function(doc, ret, options) {
+  transform: function (doc, ret, options) {
     delete ret.password;
     return ret;
   }

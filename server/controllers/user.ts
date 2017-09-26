@@ -15,15 +15,15 @@ export default class UserCtrl extends BaseCtrl {
   //Login 
   login = (req, res) => {
 
-    this.model.findOne({ email: req.body.email }, (err, user) => {
+    this.model.findOne({'pinfo.email' : req.body.pinfo.email }, (err, user) => {
       if (err) {
         res.status(400).json({ message: 'Error Generated!' });
       }
       else if (user) {
-        if (user.verify == true) {
-          if (user.status == true) {
-            if (user.deleted == false) {
-              user.comparePassword(req.body.password, (error, isMatch) => {
+        if (user.pinfo.verify == true) {
+          if (user.pinfo.status == true) {
+            if (user.pinfo.deleted == false) {
+              user.comparePassword(req.body.pinfo.password, (error, isMatch) => {
                 // console.log("pass",req.body.password);
                 if (!isMatch) { return res.status(403).json({ message: 'Password Doesnot Match!' }); }
                 const token = jwt.sign({ user: user }, process.env.SECRET_TOKEN); // , { expiresIn: 10 } seconds
@@ -129,24 +129,23 @@ export default class UserCtrl extends BaseCtrl {
   insert = (req, res) => {
     // console.log('Enter in isnert function');
 
-    this.model.find({ email: req.body.email }, (err, userlist) => {
-      console.log('User got: ', userlist);
+    this.model.find({ 'pinfo.email': req.body.pinfo.email }, (err, userlist) => {
+      //console.log('User got: ', userlist);
       if(userlist.length===1)
       {
         const user = userlist[0];
         if(user.deleted) {
-          console.log('user was deleted');
-          user.username = req.body.username;
-          user.password = req.body.password;
-          user.status = false;
-          user.verify = false;
-          user.deleted = false;
-          console.log('user.save ka function');
+          //console.log('user was deleted');
+          user.pinfo = req.body.pinfo;
+          user.pinfo.status = false;
+          user.pinfo.verify = false;
+          user.pinfo.deleted = false;
+          //console.log('user.save ka function');
           user.save((err, user) => {
             if (err) {
               res.status(500).send(err)
             } else {
-              console.log('user deleted added');
+            //  console.log('user deleted added');
               this.sendregmail(user);
               res.sendStatus(200);
             }
@@ -157,18 +156,17 @@ export default class UserCtrl extends BaseCtrl {
         }
       }
       else{
-        console.log('duplicate user')
+        
         const user = new User(req.body);
-        user.status = false;
-        user.verify = false;
-        user.deleted = false;
+        user.pinfo.status = false;
+        user.pinfo.verify = false;
+        user.pinfo.deleted = false;
         user.save((err, item) => {
-          // 11000 is the code for duplicate key error
           if (err && err.code === 11000) {
+            console.log('error 11000');
             res.sendStatus(400);
           }
-          if (err) {
-            // console.log('Insertion Error: ', req);        
+           if (err) {    
             return console.error(err);
           }
           this.sendregmail(user);
