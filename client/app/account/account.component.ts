@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ToastComponent } from '../shared/toast/toast.component';
 import { AuthService } from '../services/auth.service';
 import { UserService } from '../services/user.service';
-import { Router, ActivatedRoute, Params } from '@angular/router';
+import { ActivatedRoute, Params } from '@angular/router';
 import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
 import { UserDto, PersonInfo, Skill, Education, JobHistory, Document } from '../dto/user';
 
@@ -12,7 +12,7 @@ import { UserDto, PersonInfo, Skill, Education, JobHistory, Document } from '../
   styleUrls: ['./account.component.scss']
 })
 export class AccountComponent implements OnInit {
-
+  //Form Groups
   profileForm: FormGroup;
   username = new FormControl('', [Validators.required]);
   email = new FormControl('', [Validators.required]);
@@ -39,7 +39,7 @@ export class AccountComponent implements OnInit {
   desg = new FormControl('', [Validators.required]);
   dur = new FormControl('', [Validators.required]);
 
-
+  //Variables
   user = new UserDto();
   isLoading = true;
   isaddskill = false;
@@ -53,10 +53,9 @@ export class AccountComponent implements OnInit {
   constructor(
     private auth: AuthService,
     public toast: ToastComponent,
-    private router: Router,
     private formBuilder: FormBuilder,
     private userService: UserService) { }
-
+  //From Builder
   ngOnInit() {
     this.profileForm = this.formBuilder.group({
       username: this.username,
@@ -87,11 +86,12 @@ export class AccountComponent implements OnInit {
     })
     this.getUser();
   }
-
+  //Functions
   getUser() {
     this.userService.getUser(this.auth.currentUser).subscribe(
       data => {
         this.user = data
+        console.log("User",this.user);
       },
       error => console.log(error),
       () => this.isLoading = false
@@ -102,13 +102,6 @@ export class AccountComponent implements OnInit {
     this.isProfileEditing = true;
   }
 
-  cancelProfileEditing() {
-    this.isProfileEditing = false;
-    this.user = new UserDto();
-    this.toast.setMessage('item editing cancelled.', 'warning');
-    // reload the cats to reset the editing
-    this.getUser();
-  }
   enableaddskill() {
     this.isaddskill = true;
   }
@@ -186,7 +179,6 @@ export class AccountComponent implements OnInit {
 
   addjob() {
     let jobhistory: JobHistory = this.jobhistoryForm.value;
-    //console.log('job history', jobhistory);
     if (!this.user.skills) {
       this.user.skills = [];
     }
@@ -197,7 +189,6 @@ export class AccountComponent implements OnInit {
       this.user.jobhistories = [];
     }
     this.user.jobhistories.push(jobhistory);
-    //  console.log("user",this.user);
     this.save();
   }
 
@@ -209,16 +200,28 @@ export class AccountComponent implements OnInit {
     this.isskillediting = false;
     this.iseducationediting = false;
     this.isjobediting = false;
+    this.skillForm.reset();
+    this.educationForm.reset();
+    this.jobhistoryForm.reset();
+    this.getUser();
   }
-  delete(){
-    
+  delete() {
+
+    if (this.isskillediting) {
+      this.user.skills.splice(this.index, 1)
+    }
+    else if (this.iseducationediting) {
+      this.user.educations.splice(this.index, 1)
+    }
+    else if (this.isjobediting) {
+      this.user.jobhistories.splice(this.index, 1)
+    }
+    this.save();
   }
   save() {
     this.userService.editUser(this.user).subscribe(
       res => {
         this.toast.setMessage('account settings saved!', 'success')
-        console.log('Navigating');
-        //this.router.navigate(['/account']);
         this.reload();
       },
       error => console.log(error)

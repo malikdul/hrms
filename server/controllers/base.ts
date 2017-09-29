@@ -4,10 +4,10 @@ abstract class BaseCtrl {
 
   // Get all
   getAll = (req, res) => {
-    this.model.find({deleted: false}, (err, docs) => {
+    this.model.find({ 'pinfo.deleted': false, 'pinfo.role': 'user' }, (err, docs) => {
 
       if (err) { return console.error(err); }
-     res.json(docs);
+      res.json(docs);
     });
   }
 
@@ -31,7 +31,7 @@ abstract class BaseCtrl {
         return console.error(err);
       }
       res.status(200).json(item);
-      
+
     });
   }
 
@@ -47,26 +47,26 @@ abstract class BaseCtrl {
   update = (req, res) => {
     this.model.findOneAndUpdate({ _id: req.params.id }, req.body, (err) => {
       if (err) { return console.error(err); }
-     console.log("request body:",req.body);
+      //console.log("request body:",req.body);
       res.sendStatus(200);
     });
   }
 
   // Delete by id
   delete = (req, res) => {
-    this.model.findById({ _id: req.params.id }, (err,user) => {
+    this.model.findById({ _id: req.params.id }, (err, user) => {
       if (err) { return console.error(err); }
-      user.deleted=true;
+      user.pinfo.deleted = true;
       user.save((err, user) => {
         if (err) {
-            res.status(500).send(err)
+          res.status(500).send(err)
         }
-       else
-        {
-          console.log('user deleted',user.deleted);
-       //console.log('responce sent',res);
-        res.sendStatus(200);}
-    });
+        else {
+          console.log('user deleted', user.deleted);
+          //console.log('responce sent',res);
+          res.sendStatus(200);
+        }
+      });
     });
   }
 }

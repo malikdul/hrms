@@ -26,7 +26,7 @@ export default function setRoutes(app) {
   router.route('/users').get(userCtrl.getAll);
   router.route('/users/count').get(userCtrl.count);
   router.route('/user/sendregmail').get(userCtrl.sendregmail);
-  router.route('/user/verifiedmail/:id').get(userCtrl.verify);
+  router.route('/user/verifiedmail/:token').get(userCtrl.verify);
   //router.route('/user/sendmail').get(userCtrl.sendmail);
 
   router.route('/user/resetpasssendmail').get(userCtrl.resetpasssendmail);

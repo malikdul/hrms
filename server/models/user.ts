@@ -30,7 +30,7 @@ const userSchema = new mongoose.Schema({
 
   }],
 
-  jobhistories:[ {
+  jobhistories: [{
     orgname: String,
     desg: String,
     dur: String
@@ -54,9 +54,7 @@ userSchema.pre('save', function (next) {
     bcrypt.hash(user.pinfo.password, salt, function (error, hash) {
       if (error) { return next(error); }
       user.pinfo.password = hash;
-      //console.log('encrypted password: ', user.pinfo.password);
       next();
-      //console.log('after next');
     });
   });
 });

@@ -11,7 +11,7 @@ export class UserDto {
 export class PersonInfo {
     username: String;
     email: String;
-    password: String
+    password: String;
     role: String;
     status: Boolean;
     verify: Boolean;

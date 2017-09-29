@@ -76,7 +76,7 @@
 
   <!-- Adding New Skills -->
   <div class="card-block" *ngIf="isaddskill">
-    <button class="btn btn-sm btn-danger float-sm-right  " (click)="reload()"><i class="fa fa-times"></i></button>
+    <button class="btn btn-sm btn-danger float-sm-right " on-mouseover="Close"  (click)="reload()"><i class="fa fa-times"></i></button>
     <form [formGroup]="skillForm" name="skillForm" (ngSubmit)="addskill()">
       <div class="input-group">
         <span class="input-group-addon"><i class="fa fa-wrench  "></i></span>
@@ -105,7 +105,7 @@
           placeholder="Experience in Years" required>
       </div>
       <button class="btn btn-info" type="submit"><i class=""></i>Update</button>
-      <button class="btn btn-danger" (click)="delete()" ><i class=""></i>Delete</button>
+      <button class="btn btn-danger" (click)="delete()"><i class=""></i>Delete</button>
     </form>
   </div>
 
@@ -188,7 +188,7 @@
           placeholder="Percentage Acquired!" required>
       </div>
       <button class="btn btn-info" type="submit"><i class=""></i>Update</button>
-      <button class="btn btn-danger" (click)="delete()" ><i class=""></i>Delete</button>
+      <button class="btn btn-danger" (click)="delete()"><i class=""></i>Delete</button>
     </form>
   </div>
 
@@ -259,7 +259,7 @@
           required>
       </div>
       <button class="btn btn-info" type="submit"><i class=""></i>Update</button>
-      <button class="btn btn-danger" (click)="delete()" ><i class=""></i>Delete</button>
+      <button class="btn btn-danger" (click)="delete()"><i class=""></i>Delete</button>
     </form>
   </div>
 

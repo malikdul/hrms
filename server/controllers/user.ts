@@ -7,15 +7,13 @@ import User from '../models/user';
 import BaseCtrl from './base';
 import express from 'express';
 import * as nodemailer from 'nodemailer';
-//const router= require('express').Router();
 export default class UserCtrl extends BaseCtrl {
   model = User;
   sendemail = new EmailSender();
 
   //Login 
   login = (req, res) => {
-
-    this.model.findOne({'pinfo.email' : req.body.pinfo.email }, (err, user) => {
+    this.model.findOne({ 'pinfo.email': req.body.pinfo.email }, (err, user) => {
       if (err) {
         res.status(400).json({ message: 'Error Generated!' });
       }
@@ -24,10 +22,8 @@ export default class UserCtrl extends BaseCtrl {
           if (user.pinfo.status == true) {
             if (user.pinfo.deleted == false) {
               user.comparePassword(req.body.pinfo.password, (error, isMatch) => {
-                // console.log("pass",req.body.password);
                 if (!isMatch) { return res.status(403).json({ message: 'Password Doesnot Match!' }); }
                 const token = jwt.sign({ user: user }, process.env.SECRET_TOKEN); // , { expiresIn: 10 } seconds
-                //console.log("Sending token to user",token);
                 res.status(200).json({ token: token });
 
               });
@@ -50,113 +46,85 @@ export default class UserCtrl extends BaseCtrl {
   //sending mail
   sendregmail(emailuser) {
     let subject = 'Email Verification';
-    // console.log("*********************"+emailuser);
     this.sendemail.sendmailregisteration(subject, emailuser)
   }
 
 
   //verifying user
   verify = (req, res) => {
-    this.model.findOne({ _id: req.params.id }, (err, user) => {
-      if (!user) { return res.sendStatus(403); }
-      //ser verify account to true;
-      console.log('id:', req.params.id);
-      user.verify = true;
-      this.model.findById(req.params.id, (err, user) => {
-        if (err) {
-          res.status(500).send(err);
-        } else {
-          user.status = true;
-          user.verify = true;
-          console.log('verify boolean', user.verify);
-          // Save the updated document back to the database
-          user.save((err, user) => {
-            if (err) {
-              res.status(500).send(err)
-            }
-            //  console.log('Responce Sent!');
-            res.status(200).json('Yor Email has been verified!!!');
-          });
-        }
-      });
+    let secret = new Buffer("12345678");
+    let token = req.params.token;
+    let decode = jwt.decode(token, secret);
+    if (new Date(decode.expiry) > new Date()) {
+      this.model.findOne({ _id: decode.data._id }, (err, user) => {
+        if (!user) { return res.sendStatus(403); }
+        user.pinfo.status = true;
+        user.pinfo.verify = true;
+        user.save((err, user) => {
+          if (err) {
+            res.status(500).send(err)
+          }
+          res.status(200).json('Yor Email has been verified!!!');
+        });
+      }
+      )
     }
-    )
+    else {
+      console.log("Link is expired");
+      res.json({ error: "Link is expired" });
+    }
   };
   //verify email for resetpassword 
   resetpasswordverify = (req, res) => {
-    // retrieve the password field
     var password = req.body.password;
-
-    // update it with hash
-    req.body.password = bcrypt.hashSync(password);
-    console.log('password', req.body.password);
-    this.model.findOneAndUpdate({ _id: req.body.id }, req.body, (err) => {
-      //console.log(req.body.password);
-      if (err) { return console.error(err); }
-      res.sendStatus(200);
-    });
-  }
-  //reset password 
-  resetpassword = (req, res) => {
-    this.model.findOne({ _id: req.params.id }, (err, user) => {
-      console.log("Enter in resetpassword method");
-      if (!user) { return res.sendStatus(403); }
-      this.model.findById(req.params.id, (err, user) => {
-        if (err) {
-          res.status(500).send(err);
-        } else {
-          user.verify = true;
-          // Save the updated document back to the database
-          user.save((err, user) => {
-            if (err) {
-              res.status(500).send(err)
-            }
-            res.status(200).json('Message: Password Reset. Now You Can Log into Your Account!');
-          });
-        }
+    let secret = new Buffer("12345678");
+    let token = req.body.token;
+    let decode = jwt.decode(token, secret);
+    if (new Date(decode.expiry) > new Date()) {
+      this.model.findOne({ _id: decode.data._id }, (err, obj) => {
+        obj.pinfo.password = password;
+        obj.save((err, obj) => {
+          if (err) {
+            res.status(500).send(err);
+          } else {
+            res.sendStatus(200);
+          }
+        });
       });
     }
-    )
-  };
+  }
   //send mail for resetpassword
   resetpasssendmail = (user) => {
     let subject = 'Reset Password';
-    // console.log("*********************"+emailuser);
     this.sendemail.sendresetmail(subject, user)
   }
 
   //function override of insert 
   insert = (req, res) => {
-    // console.log('Enter in isnert function');
 
     this.model.find({ 'pinfo.email': req.body.pinfo.email }, (err, userlist) => {
-      //console.log('User got: ', userlist);
-      if(userlist.length===1)
-      {
+      if (userlist.length === 1) {
         const user = userlist[0];
-        if(user.deleted) {
-          //console.log('user was deleted');
+        if (user.deleted) {
           user.pinfo = req.body.pinfo;
           user.pinfo.status = false;
           user.pinfo.verify = false;
           user.pinfo.deleted = false;
-          //console.log('user.save ka function');
           user.save((err, user) => {
             if (err) {
               res.status(500).send(err)
             } else {
-            //  console.log('user deleted added');
               this.sendregmail(user);
               res.sendStatus(200);
             }
           });
         }
-        else{
+        else {
           res.sendStatus(400);
         }
       }
-      else{
-        
+      else {
+
         const user = new User(req.body);
         user.pinfo.status = false;
         user.pinfo.verify = false;
@@ -166,7 +134,7 @@ export default class UserCtrl extends BaseCtrl {
             console.log('error 11000');
             res.sendStatus(400);
           }
-           if (err) {    
+          if (err) {
             return console.error(err);
           }
           this.sendregmail(user);
@@ -180,18 +148,15 @@ export default class UserCtrl extends BaseCtrl {
   // Get by email
   forgotpassword = (req, res) => {
     const user = new User(req.body);
-    user.verify = false;
     console.log("recieved email" + req.body.email);
-    this.model.findOne({ email: req.body.email }, (err, obj) => {
-      console.log("forgot passwd:" + req.body.email);
-      console.log("object passwd" + obj.email);
-      if (obj.email == req.body.email) {
-        //console.log("Email found!");
+    this.model.findOne({ 'pinfo.email': req.body.email }, (err, obj) => {
+      console.log("Object" + obj);
+      console.log("object passwd" + obj.pinfo.email);
+      if (obj.pinfo.email == req.body.email) {
+        this.resetpasssendmail(obj);
         res.status(200).json();
       }
       else if (err) { return console.error(err); }
-      this.resetpasssendmail(obj);
-      //res.json(obj);
     });
   }
 
